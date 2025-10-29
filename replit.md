@@ -62,6 +62,18 @@ This is a full-stack web application built with React, Express, and PostgreSQL t
 - **Password Hashing**: bcrypt
 - **Validation**: Zod
 
+## Android Integration
+
+This backend provides API endpoints for Android apps to fetch AdMob configurations, track analytics, and receive push notifications. See the integration guides:
+
+- **[ANDROID_INTEGRATION.md](./ANDROID_INTEGRATION.md)** - Complete integration guide with examples
+- **[ANDROID_QUICK_START.md](./ANDROID_QUICK_START.md)** - 5-minute quick start guide
+
+Key API endpoints:
+- `GET /api/v1/config/{packageName}` - Fetch AdMob accounts and configurations
+- `POST /api/v1/analytics/admob` - Track ad impressions, clicks, and revenue
+- `POST /api/v1/device/register` - Register devices for push notifications
+
 ## Project Structure
 
 ```
