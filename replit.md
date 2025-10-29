@@ -198,13 +198,53 @@ Fetch and display notifications based on targeting rules and display conditions.
 - SQL injection prevention via Drizzle ORM
 - XSS protection via React's built-in sanitization
 
+## Deployment
+
+### Hostinger Deployment (MySQL)
+
+The application is ready to deploy to Hostinger with MySQL database:
+
+**Deployment Files:**
+- `database_mysql.sql` - MySQL database schema with all tables
+- `shared/schema.mysql.ts` - MySQL-compatible Drizzle ORM schema
+- `server/db.mysql.ts` - MySQL database connection
+- `package-for-hostinger.sh` - Automated packaging script
+- `.env.example` - Environment configuration template
+- `ecosystem.config.js` - PM2 process manager config
+- `.htaccess` - Apache web server configuration
+
+**Documentation:**
+- `HOSTINGER_DEPLOYMENT.md` - Complete 67-step deployment guide
+- `DEPLOYMENT_CHECKLIST.md` - Step-by-step checklist with checkboxes
+- `DEPLOYMENT_SUMMARY.md` - Quick reference summary
+
+**Quick Deploy:**
+```bash
+# 1. Create deployment package
+./package-for-hostinger.sh
+
+# 2. Upload hostinger-deployment-package.zip to Hostinger
+# 3. Import database_mysql.sql via phpMyAdmin
+# 4. Edit .env with database credentials
+# 5. Configure Node.js app in hPanel
+# 6. Start application
+```
+
+**Android App Update:**
+Update BASE_URL in 3 files to point to your Hostinger domain:
+- MainActivity.java (line 42)
+- UtilsAdmob.java (line 59)
+- MyFirebaseMessagingService.java (line 27)
+
 ## Recent Updates
 
 - **2025-10-29**: Initial MVP implementation with complete frontend, backend, and database
 - Implemented JWT authentication and protected routes
 - Created comprehensive admin dashboard with all management features
 - Built complete REST API for Android integration
-- Set up PostgreSQL database with Drizzle ORM
+- Set up PostgreSQL database with Drizzle ORM (Replit environment)
+- Converted to MySQL for Hostinger deployment
+- Created complete deployment package with documentation
 - Designed beautiful Material Design UI with dark mode support
 
 ## Future Enhancements
