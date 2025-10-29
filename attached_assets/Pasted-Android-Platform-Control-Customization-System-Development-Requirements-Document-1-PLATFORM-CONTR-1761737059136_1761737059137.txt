@@ -1,0 +1,601 @@
+Android Platform Control & Customization System
+Development Requirements Document
+
+1. PLATFORM CONTROL DASHBOARD (Web-Based Admin Panel)
+1.1 Admin Panel Requirements
+Create a comprehensive web-based dashboard with the following features:
+Core Features:
+
+User Authentication System
+
+Secure admin login
+Role-based access control (Super Admin, Admin, Viewer)
+Session management with JWT tokens
+Two-factor authentication (optional)
+
+
+Multi-App Management
+
+Manage multiple Android applications from single dashboard
+Each app has unique identifier (package name)
+Bulk operations across apps
+App grouping/categorization
+
+
+
+Technology Stack:
+
+Frontend: React.js or Vue.js with modern UI framework (Material-UI, Ant Design)
+Backend: Node.js (Express) or Python (Flask/Django)
+Database: MongoDB or PostgreSQL
+API: RESTful API with JSON responses
+Hosting: Cloud-based (AWS, Google Cloud, or Firebase)
+
+
+2. MULTI-ACCOUNT ADMOB SWITCHING SYSTEM
+2.1 AdMob Account Management
+Backend Configuration Server:
+json{
+  "app_id": "com.example.myapp",
+  "version": "1.0.0",
+  "last_update": "2025-10-29T10:00:00Z",
+  "admob_accounts": [
+    {
+      "account_id": "account_1",
+      "account_name": "Primary Account",
+      "status": "active",
+      "priority": 1,
+      "weight": 70,
+      "banner_id": "ca-app-pub-XXXXX/XXXXX",
+      "interstitial_id": "ca-app-pub-XXXXX/XXXXX",
+      "rewarded_id": "ca-app-pub-XXXXX/XXXXX",
+      "app_open_id": "ca-app-pub-XXXXX/XXXXX",
+      "native_id": "ca-app-pub-XXXXX/XXXXX"
+    },
+    {
+      "account_id": "account_2",
+      "account_name": "Backup Account",
+      "status": "active",
+      "priority": 2,
+      "weight": 30,
+      "banner_id": "ca-app-pub-YYYYY/YYYYY",
+      "interstitial_id": "ca-app-pub-YYYYY/YYYYY",
+      "rewarded_id": "ca-app-pub-YYYYY/YYYYY",
+      "app_open_id": "ca-app-pub-YYYYY/YYYYY",
+      "native_id": "ca-app-pub-YYYYY/YYYYY"
+    }
+  ],
+  "switching_rules": {
+    "strategy": "weighted_random", // Options: "weighted_random", "sequential", "geographic", "time_based"
+    "rotation_interval": "daily", // "hourly", "daily", "session", "random"
+    "fallback_enabled": true,
+    "ab_testing_enabled": true
+  },
+  "geographic_targeting": {
+    "enabled": true,
+    "rules": [
+      {
+        "countries": ["US", "CA", "UK"],
+        "account_id": "account_1"
+      },
+      {
+        "countries": ["IN", "PK", "BD"],
+        "account_id": "account_2"
+      }
+    ]
+  }
+}
+2.2 Dashboard Features for AdMob Management
+Account Management Interface:
+
+Add/Edit/Delete AdMob Accounts
+
+Account nickname/label
+All ad unit IDs (Banner, Interstitial, Rewarded, App Open, Native)
+Account status toggle (Active/Paused/Disabled)
+Priority ranking
+Weight distribution (percentage)
+
+
+Switching Strategies
+
+Weighted Random: Distribute traffic based on weight percentages
+Sequential Rotation: Rotate accounts in order
+Geographic: Assign accounts based on user country
+Time-Based: Switch accounts based on time of day
+Performance-Based: Auto-switch based on eCPM/revenue
+A/B Testing: Split traffic for testing different accounts
+
+
+Analytics & Monitoring
+
+Real-time account distribution
+Revenue per account
+Fill rate per account
+Account health status
+Error logs per account
+User distribution across accounts
+
+
+Rules Engine
+
+Create custom switching rules
+Set conditions (country, time, app version, device type)
+Priority order for rule execution
+Override rules for testing
+
+
+
+
+3. PUSH NOTIFICATION SYSTEM
+3.1 Firebase Cloud Messaging (FCM) Integration
+Notification Types:
+
+General Announcements
+
+Broadcast to all users
+Scheduled notifications
+Rich media support (images, buttons)
+
+
+Targeted Notifications
+
+By country/region
+By app version
+By user segments
+By device type (Android version, manufacturer)
+
+
+In-App Messages
+
+Popup dialogs
+Banner messages
+Fullscreen interstitials
+Custom HTML content
+
+
+Action Notifications
+
+Deep linking to specific screens
+External URL opening
+App update prompts
+Feature announcements
+
+
+
+3.2 Notification Configuration Format
+json{
+  "notification_id": "notif_001",
+  "title": "Special Offer!",
+  "message": "Get 50% off on premium features",
+  "type": "popup", // "popup", "toast", "banner", "fullscreen"
+  "priority": "high",
+  "targeting": {
+    "countries": ["US", "CA", "UK"],
+    "app_versions": ["1.0.0", "1.1.0"],
+    "min_android_version": 21,
+    "user_segments": ["new_users", "active_users"]
+  },
+  "schedule": {
+    "start_date": "2025-10-30T00:00:00Z",
+    "end_date": "2025-11-30T23:59:59Z",
+    "recurring": false,
+    "frequency": "once" // "once", "daily", "weekly"
+  },
+  "content": {
+    "image_url": "https://example.com/offer.png",
+    "action_button_text": "Claim Now",
+    "action_type": "deeplink", // "deeplink", "url", "dismiss"
+    "action_value": "app://premium",
+    "cancelable": true
+  },
+  "display_rules": {
+    "max_displays": 3,
+    "display_interval_hours": 24,
+    "show_on_app_launch": true
+  }
+}
+3.3 Dashboard Features for Notifications
+Notification Management Interface:
+
+Create Notification
+
+Visual editor with preview
+Template library
+Rich text formatting
+Image/media upload
+Action button configuration
+
+
+Targeting Options
+
+Geographic targeting (country, city)
+Demographic targeting (app version, Android version)
+Behavioral targeting (new users, active users, inactive users)
+Custom segments
+
+
+Scheduling
+
+Immediate send
+Scheduled send (date/time picker with timezone)
+Recurring notifications
+Time zone aware delivery
+
+
+Analytics
+
+Delivery rate
+Open rate / Click-through rate
+Conversion tracking
+A/B test results
+User engagement metrics
+
+
+Notification History
+
+List of all sent notifications
+Status tracking (Scheduled, Sent, Failed)
+Edit draft notifications
+Clone existing notifications
+
+
+
+
+4. ANDROID APP IMPLEMENTATION
+4.1 Required Android Components
+Gradle Dependencies:
+gradle// Firebase
+implementation 'com.google.firebase:firebase-messaging:23.x.x'
+implementation 'com.google.firebase:firebase-config:21.x.x'
+implementation 'com.google.firebase:firebase-analytics:21.x.x'
+
+// Networking
+implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
+
+// AdMob
+implementation 'com.google.android.gms:play-services-ads:22.x.x'
+
+// Work Manager (for periodic sync)
+implementation 'androidx.work:work-runtime:2.8.x'
+4.2 Enhanced AdMobConfigManager Features
+Extend the existing AdMobConfigManager.java to include:
+
+Multi-Account Support
+
+Load multiple AdMob accounts from server
+Implement switching logic
+Cache account configurations
+Fallback mechanism
+
+
+Account Selection Logic
+
+java   public class MultiAccountAdMobManager {
+       private List<AdMobAccount> accounts;
+       private SwitchingStrategy strategy;
+       
+       // Select account based on strategy
+       public AdMobAccount selectAccount() {
+           switch(strategy) {
+               case WEIGHTED_RANDOM:
+                   return selectByWeight();
+               case GEOGRAPHIC:
+                   return selectByLocation();
+               case SEQUENTIAL:
+                   return selectSequential();
+               default:
+                   return getPrimaryAccount();
+           }
+       }
+       
+       // Weight-based selection
+       private AdMobAccount selectByWeight() {
+           int totalWeight = getTotalWeight();
+           int random = new Random().nextInt(totalWeight);
+           // Implementation logic
+       }
+   }
+
+Performance Tracking
+
+Track impressions per account
+Monitor fill rates
+Report errors to server
+Send analytics data
+
+
+
+4.3 Notification Handler Implementation
+Create new NotificationManager.java:
+javapublic class NotificationManager {
+    // Fetch notifications from server
+    public void fetchNotifications();
+    
+    // Display notification based on type
+    public void showNotification(NotificationConfig config);
+    
+    // Track notification events
+    public void trackNotificationEvent(String notifId, String event);
+    
+    // Check display rules
+    private boolean shouldDisplayNotification(NotificationConfig config);
+    
+    // Handle notification actions
+    public void handleNotificationAction(NotificationConfig config);
+}
+Notification Types Implementation:
+
+Popup Dialog
+
+javapublic void showPopupNotification(NotificationConfig config) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    builder.setTitle(config.getTitle());
+    builder.setMessage(config.getMessage());
+    
+    if (config.hasImage()) {
+        ImageView imageView = new ImageView(context);
+        Picasso.get().load(config.getImageUrl()).into(imageView);
+        builder.setView(imageView);
+    }
+    
+    builder.setPositiveButton(config.getActionButtonText(), 
+        (dialog, which) -> handleAction(config));
+    
+    if (config.isCancelable()) {
+        builder.setNegativeButton("Close", null);
+    }
+    
+    builder.show();
+}
+
+Banner Notification
+
+javapublic void showBannerNotification(NotificationConfig config) {
+    // Create banner view at top/bottom of screen
+    // Auto-dismiss after delay
+    // Track impressions
+}
+
+Fullscreen Interstitial
+
+javapublic void showFullscreenNotification(NotificationConfig config) {
+    Intent intent = new Intent(context, FullscreenNotificationActivity.class);
+    intent.putExtra("config", config);
+    context.startActivity(intent);
+}
+4.4 Firebase Cloud Messaging Integration
+Create MyFirebaseMessagingService.java:
+javapublic class MyFirebaseMessagingService extends FirebaseMessagingService {
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        // Parse notification data
+        NotificationConfig config = parseNotification(remoteMessage);
+        
+        // Check if app is in foreground
+        if (isAppInForeground()) {
+            NotificationManager.getInstance().showNotification(config);
+        } else {
+            showSystemNotification(config);
+        }
+    }
+    
+    @Override
+    public void onNewToken(String token) {
+        // Send token to server
+        sendTokenToServer(token);
+    }
+}
+
+5. API ENDPOINTS SPECIFICATION
+5.1 Configuration Endpoints
+GET /api/v1/config/{package_name}
+Response:
+{
+  "admob_config": {...},
+  "notification_config": {...},
+  "app_settings": {...}
+}
+
+POST /api/v1/analytics/admob
+Request:
+{
+  "package_name": "com.example.app",
+  "account_id": "account_1",
+  "event": "impression",
+  "ad_type": "banner",
+  "timestamp": "..."
+}
+
+POST /api/v1/device/register
+Request:
+{
+  "package_name": "com.example.app",
+  "fcm_token": "...",
+  "device_info": {...},
+  "location": "US"
+}
+
+GET /api/v1/notifications/pending
+Response:
+{
+  "notifications": [...]
+}
+
+POST /api/v1/notifications/track
+Request:
+{
+  "notification_id": "notif_001",
+  "event": "displayed", // "displayed", "clicked", "dismissed"
+  "timestamp": "..."
+}
+5.2 Admin Dashboard Endpoints
+POST /admin/api/admob/accounts
+GET /admin/api/admob/accounts
+PUT /admin/api/admob/accounts/{id}
+DELETE /admin/api/admob/accounts/{id}
+
+POST /admin/api/notifications
+GET /admin/api/notifications
+PUT /admin/api/notifications/{id}
+DELETE /admin/api/notifications/{id}
+
+GET /admin/api/analytics/admob
+GET /admin/api/analytics/notifications
+GET /admin/api/apps
+
+6. SECURITY CONSIDERATIONS
+6.1 API Security
+
+HTTPS only (TLS 1.2+)
+API key authentication
+Rate limiting (per IP and per app)
+Request signing for sensitive operations
+Obfuscate sensitive data in Android app
+
+6.2 Data Protection
+
+Encrypt AdMob IDs in transit and at rest
+Don't store sensitive data in SharedPreferences (use EncryptedSharedPreferences)
+Implement certificate pinning
+Validate server responses
+
+6.3 Admin Panel Security
+
+Strong password requirements
+Session timeout
+Activity logging
+IP whitelisting (optional)
+Database encryption
+
+
+7. TESTING REQUIREMENTS
+7.1 Android App Testing
+
+Test AdMob account switching logic
+Test notification display rules
+Test offline functionality
+Test fallback mechanisms
+Performance testing (memory, battery)
+
+7.2 Dashboard Testing
+
+Cross-browser compatibility
+Responsive design testing
+Load testing (multiple apps)
+Security penetration testing
+
+7.3 Integration Testing
+
+End-to-end notification flow
+AdMob configuration updates
+Real-time analytics reporting
+
+
+8. DEPLOYMENT CHECKLIST
+8.1 Server Setup
+
+ Set up hosting environment
+ Configure database
+ Deploy API server
+ Deploy admin dashboard
+ Set up SSL certificates
+ Configure CDN for images
+ Set up monitoring (Uptime, errors)
+ Configure backup system
+
+8.2 Android App Integration
+
+ Integrate Firebase SDK
+ Implement config fetching
+ Implement notification handlers
+ Update AdMob manager
+ Add analytics tracking
+ Test on multiple devices
+ ProGuard configuration
+ Release build testing
+
+8.3 Firebase Setup
+
+ Create Firebase project
+ Enable Cloud Messaging
+ Configure Remote Config
+ Set up Analytics
+ Add server key to backend
+ Test push notifications
+
+
+9. MONITORING & MAINTENANCE
+9.1 Key Metrics to Monitor
+
+API response times
+Config fetch success rate
+Notification delivery rate
+AdMob account distribution
+Error rates by account
+User engagement with notifications
+
+9.2 Automated Alerts
+
+Server downtime
+API errors > threshold
+AdMob account failures
+Database connection issues
+Unusual traffic patterns
+
+9.3 Regular Maintenance Tasks
+
+Update dependencies
+Review and optimize database queries
+Archive old notification data
+Update security certificates
+Backup configurations
+Performance optimization
+
+
+10. FUTURE ENHANCEMENTS
+Phase 2 Features:
+
+Machine learning for optimal account switching
+Advanced A/B testing framework
+Real-time dashboard with WebSocket
+Mobile app for dashboard access
+Multi-language notification support
+User preference management
+Advanced segmentation engine
+Revenue optimization algorithms
+
+
+DELIVERABLES
+
+Admin Dashboard
+
+Fully functional web application
+User documentation
+API documentation
+
+
+Android Library/SDK
+
+Multi-account AdMob manager
+Notification handler
+Sample implementation
+Integration guide
+
+
+Backend API
+
+RESTful API server
+Database schema
+Deployment scripts
+API documentation
+
+
+Documentation
+
+Architecture overview
+Setup guide
+User manual
+Troubleshooting guide
