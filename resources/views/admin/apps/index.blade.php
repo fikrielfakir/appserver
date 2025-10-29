@@ -32,19 +32,9 @@
 </div>
 
 <script>
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
 function loadApps() {
-    const token = getCookie('auth_token');
-    
     fetch('/api/admin/apps', {
-        headers: {
-            'Authorization': 'Bearer ' + token
-        }
+        credentials: 'include'
     })
         .then(response => response.json())
         .then(data => {
@@ -82,15 +72,13 @@ function showCreateModal() {
 
 function deleteApp(id) {
     if (confirm('Are you sure you want to delete this app?')) {
-        const token = getCookie('auth_token');
-        
         fetch(`/api/admin/apps/${id}`, {
             method: 'DELETE',
             headers: {
-                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            }
+            },
+            credentials: 'include'
         })
         .then(response => response.json())
         .then(data => {

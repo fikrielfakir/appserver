@@ -53,37 +53,27 @@
         </aside>
         
         <script>
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const user = JSON.parse(sessionStorage.getItem('user') || '{}');
         if (user.username) {
             document.getElementById('username-display').textContent = user.username + ' (' + user.role + ')';
         }
         
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-        }
-        
         function handleLogout() {
-            const token = getCookie('auth_token');
-            
             fetch('/api/auth/logout', {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer ' + token,
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                }
+                },
+                credentials: 'include'
             })
             .then(() => {
-                document.cookie = 'auth_token=; path=/; max-age=0';
-                localStorage.removeItem('user');
+                sessionStorage.removeItem('user');
                 window.location.href = '/login';
             })
             .catch(error => {
                 console.error('Logout error:', error);
-                document.cookie = 'auth_token=; path=/; max-age=0';
-                localStorage.removeItem('user');
+                sessionStorage.removeItem('user');
                 window.location.href = '/login';
             });
         }

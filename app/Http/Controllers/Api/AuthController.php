@@ -30,13 +30,22 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'token' => $token,
             'user' => [
                 'id' => $user->id,
                 'username' => $user->username,
                 'role' => $user->role,
             ]
-        ]);
+        ])->cookie(
+            'auth_token',
+            $token,
+            60 * 24,
+            '/',
+            null,
+            true,
+            true,
+            false,
+            'lax'
+        );
     }
 
     public function me()
@@ -60,6 +69,16 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Successfully logged out'
-        ]);
+        ])->cookie(
+            'auth_token',
+            '',
+            -1,
+            '/',
+            null,
+            true,
+            true,
+            false,
+            'lax'
+        );
     }
 }
