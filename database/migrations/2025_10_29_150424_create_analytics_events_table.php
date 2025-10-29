@@ -20,6 +20,9 @@ return new class extends Migration
             
             $table->foreign('app_id')->references('id')->on('apps')->onDelete('cascade');
             $table->foreign('account_id')->references('id')->on('admob_accounts')->onDelete('set null');
+            $table->index('app_id');
+            $table->index('event_type');
+            $table->index('timestamp');
         });
     }
 

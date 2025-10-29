@@ -41,6 +41,8 @@ return new class extends Migration
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             
             $table->foreign('app_id')->references('id')->on('apps')->onDelete('cascade');
+            $table->index('app_id');
+            $table->index('status');
         });
     }
 

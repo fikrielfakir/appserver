@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('status')->default('active');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            
+            $table->index('status');
         });
     }
 

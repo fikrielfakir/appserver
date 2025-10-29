@@ -21,6 +21,8 @@ return new class extends Migration
             $table->timestamp('created_at')->useCurrent();
             
             $table->foreign('app_id')->references('id')->on('apps')->onDelete('cascade');
+            $table->index('app_id');
+            $table->index('country');
         });
     }
 

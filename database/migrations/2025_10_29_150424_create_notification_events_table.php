@@ -17,6 +17,9 @@ return new class extends Migration
             
             $table->foreign('notification_id')->references('id')->on('notifications')->onDelete('cascade');
             $table->foreign('device_id')->references('id')->on('devices')->onDelete('set null');
+            $table->index('notification_id');
+            $table->index('event_type');
+            $table->index('timestamp');
         });
     }
 
