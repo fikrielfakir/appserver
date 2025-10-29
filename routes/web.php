@@ -10,7 +10,7 @@ Route::get('/login', function () {
     return view('admin.login');
 });
 
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['web.auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     });
@@ -21,5 +21,13 @@ Route::prefix('admin')->group(function () {
     
     Route::get('/notifications', function () {
         return view('admin.notifications.index');
+    });
+    
+    Route::get('/admob-accounts', function () {
+        return view('admin.admob-accounts.index');
+    });
+    
+    Route::get('/analytics', function () {
+        return view('admin.analytics');
     });
 });
