@@ -74,7 +74,7 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                localStorage.setItem('auth_token', data.token);
+                document.cookie = `auth_token=${data.token}; path=/; max-age=86400; SameSite=Lax`;
                 localStorage.setItem('user', JSON.stringify(data.user));
                 window.location.href = '/admin/dashboard';
             } else {
