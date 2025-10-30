@@ -28,17 +28,24 @@
                     <div class="card-body p-4">
                         <h1 class="h3 mb-4 text-center fw-bold">Admin Login</h1>
                         
-                        <div id="error-message" class="alert alert-danger d-none" role="alert"></div>
+                        @if ($errors->any())
+                            <div class="alert alert-danger" role="alert">
+                                {{ $errors->first() }}
+                            </div>
+                        @endif
                         
-                        <form id="login-form" onsubmit="handleLogin(event)">
+                        <form method="POST" action="{{ url('/login') }}">
+                            @csrf
                             <div class="mb-3">
                                 <label for="username" class="form-label fw-bold">Username</label>
                                 <input 
                                     type="text" 
-                                    class="form-control" 
+                                    class="form-control @error('username') is-invalid @enderror" 
                                     id="username" 
                                     name="username"
+                                    value="{{ old('username') }}"
                                     required
+                                    autofocus
                                 >
                             </div>
                             
@@ -46,7 +53,7 @@
                                 <label for="password" class="form-label fw-bold">Password</label>
                                 <input 
                                     type="password" 
-                                    class="form-control" 
+                                    class="form-control @error('password') is-invalid @enderror" 
                                     id="password" 
                                     name="password"
                                     autocomplete="current-password"
@@ -68,43 +75,5 @@
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-    function handleLogin(event) {
-        event.preventDefault();
-        
-        const formData = new FormData(event.target);
-        const errorDiv = document.getElementById('error-message');
-        
-        fetch('/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({
-                username: formData.get('username'),
-                password: formData.get('password')
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success && data.token) {
-                // Store token and user info
-                localStorage.setItem('auth_token', data.token);
-                sessionStorage.setItem('user', JSON.stringify(data.user));
-                window.location.href = '/admin/dashboard';
-            } else {
-                errorDiv.textContent = data.message || 'Login failed';
-                errorDiv.classList.remove('d-none');
-            }
-        })
-        .catch(error => {
-            errorDiv.textContent = 'An error occurred. Please try again.';
-            errorDiv.classList.remove('d-none');
-            console.error('Login error:', error);
-        });
-    }
-    </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Web\AuthController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -9,11 +10,11 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Route::get('/login', function () {
-    return view('admin.login');
-});
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::prefix('admin')->middleware(['web.auth', 'role:admin,superadmin'])->group(function () {
+Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     });
