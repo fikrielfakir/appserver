@@ -7,52 +7,68 @@
 
     <title>Login - {{ config('app.name', 'Admin Panel') }}</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 class="text-2xl font-bold mb-6 text-center">Admin Login</h1>
-        
-        <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"></div>
-        
-        <form id="login-form" onsubmit="handleLogin(event)">
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
-                    Username
-                </label>
-                <input 
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="username" 
-                    type="text" 
-                    name="username"
-                    required
-                >
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h1 class="h3 mb-4 text-center fw-bold">Admin Login</h1>
+                        
+                        <div id="error-message" class="alert alert-danger d-none" role="alert"></div>
+                        
+                        <form id="login-form" onsubmit="handleLogin(event)">
+                            <div class="mb-3">
+                                <label for="username" class="form-label fw-bold">Username</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="username" 
+                                    name="username"
+                                    required
+                                >
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="password" class="form-label fw-bold">Password</label>
+                                <input 
+                                    type="password" 
+                                    class="form-control" 
+                                    id="password" 
+                                    name="password"
+                                    autocomplete="current-password"
+                                    required
+                                >
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    Sign In
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            
-            <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-                    Password
-                </label>
-                <input 
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                    id="password" 
-                    type="password" 
-                    name="password"
-                    required
-                >
-            </div>
-            
-            <div class="flex items-center justify-between">
-                <button 
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-                    type="submit"
-                >
-                    Sign In
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
 
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
     function handleLogin(event) {
         event.preventDefault();
@@ -78,12 +94,12 @@
                 window.location.href = '/admin/dashboard';
             } else {
                 errorDiv.textContent = data.message || 'Login failed';
-                errorDiv.classList.remove('hidden');
+                errorDiv.classList.remove('d-none');
             }
         })
         .catch(error => {
             errorDiv.textContent = 'An error occurred. Please try again.';
-            errorDiv.classList.remove('hidden');
+            errorDiv.classList.remove('d-none');
             console.error('Login error:', error);
         });
     }

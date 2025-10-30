@@ -7,52 +7,77 @@
 
     <title>{{ config('app.name', 'Admin Panel') }} - @yield('title')</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            min-height: 100vh;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background-color: #212529;
+        }
+        .sidebar .nav-link {
+            color: #adb5bd;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.25rem;
+            border-radius: 0.25rem;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: #495057;
+            color: #fff;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <div class="flex">
-        <aside class="w-64 bg-gray-800 text-white min-h-screen p-4">
-            <div class="mb-8">
-                <h1 class="text-2xl font-bold">Admin Panel</h1>
-                <p class="text-sm text-gray-400 mt-2" id="username-display"></p>
-            </div>
-            <nav>
-                <ul class="space-y-2">
-                    <li>
-                        <a href="/admin/dashboard" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->is('admin/dashboard') ? 'bg-gray-700' : '' }}">
-                            Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/admin/apps" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->is('admin/apps*') ? 'bg-gray-700' : '' }}">
-                            Apps
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/admin/admob-accounts" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->is('admin/admob-accounts*') ? 'bg-gray-700' : '' }}">
-                            AdMob Accounts
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/admin/notifications" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->is('admin/notifications*') ? 'bg-gray-700' : '' }}">
-                            Notifications
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/admin/analytics" class="block px-4 py-2 rounded hover:bg-gray-700 {{ request()->is('admin/analytics*') ? 'bg-gray-700' : '' }}">
-                            Analytics
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <div class="mt-auto pt-8">
-                <button onclick="handleLogout()" class="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
-                    Logout
-                </button>
-            </div>
-        </aside>
-        
-        <script>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <aside class="col-md-3 col-lg-2 d-md-block sidebar p-3">
+                <div class="mb-4">
+                    <h1 class="h4 text-white">Admin Panel</h1>
+                    <p class="small text-muted" id="username-display"></p>
+                </div>
+                <nav class="nav flex-column">
+                    <a href="/admin/dashboard" class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}">
+                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    </a>
+                    <a href="/admin/apps" class="nav-link {{ request()->is('admin/apps*') ? 'active' : '' }}">
+                        <i class="bi bi-app-indicator me-2"></i> Apps
+                    </a>
+                    <a href="/admin/admob-accounts" class="nav-link {{ request()->is('admin/admob-accounts*') ? 'active' : '' }}">
+                        <i class="bi bi-cash-stack me-2"></i> AdMob Accounts
+                    </a>
+                    <a href="/admin/notifications" class="nav-link {{ request()->is('admin/notifications*') ? 'active' : '' }}">
+                        <i class="bi bi-bell me-2"></i> Notifications
+                    </a>
+                    <a href="/admin/analytics" class="nav-link {{ request()->is('admin/analytics*') ? 'active' : '' }}">
+                        <i class="bi bi-graph-up me-2"></i> Analytics
+                    </a>
+                </nav>
+                <div class="mt-auto pt-4">
+                    <button onclick="handleLogout()" class="btn btn-danger w-100">
+                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </button>
+                </div>
+            </aside>
+            
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="container-fluid">
+                    @yield('content')
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
         const user = JSON.parse(sessionStorage.getItem('user') || '{}');
         if (user.username) {
             document.getElementById('username-display').textContent = user.username + ' (' + user.role + ')';
@@ -77,13 +102,8 @@
                 window.location.href = '/login';
             });
         }
-        </script>
-
-        <main class="flex-1 p-8">
-            <div class="max-w-7xl mx-auto">
-                @yield('content')
-            </div>
-        </main>
-    </div>
+    </script>
+    
+    @yield('scripts')
 </body>
 </html>
