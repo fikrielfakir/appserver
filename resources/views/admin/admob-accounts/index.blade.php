@@ -3,108 +3,208 @@
 @section('title', 'AdMob Accounts')
 
 @section('content')
-<div>
-    <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold">AdMob Accounts</h1>
-        <button onclick="showCreateModal()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-            Add AdMob Account
-        </button>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">AdMob Accounts</h1>
+        <p class="text-muted">Manage AdMob account configurations</p>
     </div>
+    <button onclick="showCreateModal()" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-2"></i>Add Account
+    </button>
+</div>
 
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Account Name</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">App</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Priority</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Weight</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="accounts-table" class="bg-white divide-y divide-gray-200">
-                <tr>
-                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">Loading accounts...</td>
-                </tr>
-            </tbody>
-        </table>
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Account Name</th>
+                        <th>App</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Weight</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="accounts-table">
+                    <tr><td colspan="6" class="text-center py-4 text-muted">Loading accounts...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
+<!-- Create Modal -->
+<div class="modal fade" id="accountModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add AdMob Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="accountForm">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Account Name</label>
+                            <input type="text" class="form-control" id="account_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">App</label>
+                            <select class="form-select" id="app_id" required>
+                                <option value="">Select App</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="status">
+                                <option value="active">Active</option>
+                                <option value="paused">Paused</option>
+                                <option value="disabled">Disabled</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Priority</label>
+                            <input type="number" class="form-control" id="priority" value="1">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Weight (%)</label>
+                            <input type="number" class="form-control" id="weight" value="50" min="0" max="100">
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <h6 class="mb-3">Ad Unit IDs</h6>
+                    <div class="mb-3">
+                        <label class="form-label">Banner ID</label>
+                        <input type="text" class="form-control" id="banner_id" placeholder="ca-app-pub-XXXXX/XXXXX">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Interstitial ID</label>
+                        <input type="text" class="form-control" id="interstitial_id" placeholder="ca-app-pub-XXXXX/XXXXX">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rewarded ID</label>
+                        <input type="text" class="form-control" id="rewarded_id" placeholder="ca-app-pub-XXXXX/XXXXX">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">App Open ID</label>
+                        <input type="text" class="form-control" id="app_open_id" placeholder="ca-app-pub-XXXXX/XXXXX">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Native ID</label>
+                        <input type="text" class="form-control" id="native_id" placeholder="ca-app-pub-XXXXX/XXXXX">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveAccount()">Save Account</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
 <script>
+let accountModal;
+
+document.addEventListener('DOMContentLoaded', function() {
+    accountModal = new bootstrap.Modal(document.getElementById('accountModal'));
+    loadApps();
+    loadAccounts();
+});
+
+function loadApps() {
+    fetch('/api/admin/apps', { credentials: 'include' })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const select = document.getElementById('app_id');
+            select.innerHTML = '<option value="">Select App</option>' + 
+                data.apps.map(app => `<option value="${app.id}">${app.app_name}</option>`).join('');
+        }
+    });
+}
+
 function loadAccounts() {
-    fetch('/api/admin/admob-accounts', {
-        credentials: 'include'
-    })
+    fetch('/api/admin/admob-accounts', { credentials: 'include' })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
             const tbody = document.getElementById('accounts-table');
             if (data.accounts.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No accounts found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">No accounts found. Create your first account!</td></tr>';
                 return;
             }
             
             tbody.innerHTML = data.accounts.map(account => `
                 <tr>
-                    <td class="px-6 py-4 font-medium">${account.account_name}</td>
-                    <td class="px-6 py-4">${account.app ? account.app.app_name : 'N/A'}</td>
-                    <td class="px-6 py-4">
-                        <span class="px-2 py-1 text-xs rounded ${getStatusColor(account.status)}">
-                            ${account.status}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4">${account.priority || 0}</td>
-                    <td class="px-6 py-4">${account.weight || 0}%</td>
-                    <td class="px-6 py-4">
-                        <button onclick="viewAccount('${account.id}')" class="text-blue-600 hover:text-blue-800 mr-3">View</button>
-                        <button onclick="deleteAccount('${account.id}')" class="text-red-600 hover:text-red-800">Delete</button>
+                    <td><strong>${account.account_name}</strong></td>
+                    <td>${account.app ? account.app.app_name : 'N/A'}</td>
+                    <td><span class="badge bg-${account.status === 'active' ? 'success' : 'secondary'}">${account.status}</span></td>
+                    <td>${account.priority || 0}</td>
+                    <td>${account.weight || 0}%</td>
+                    <td>
+                        <button onclick="deleteAccount('${account.id}')" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </td>
                 </tr>
             `).join('');
         }
-    })
-    .catch(error => console.error('Error loading accounts:', error));
-}
-
-function getStatusColor(status) {
-    const colors = {
-        'active': 'bg-green-100 text-green-800',
-        'paused': 'bg-yellow-100 text-yellow-800',
-        'disabled': 'bg-gray-100 text-gray-800'
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+    });
 }
 
 function showCreateModal() {
-    alert('Create AdMob account modal - implement as needed');
+    document.getElementById('accountForm').reset();
+    accountModal.show();
 }
 
-function viewAccount(id) {
-    alert('View account details - implement as needed');
+function saveAccount() {
+    const data = {
+        account_name: document.getElementById('account_name').value,
+        app_id: document.getElementById('app_id').value,
+        status: document.getElementById('status').value,
+        priority: parseInt(document.getElementById('priority').value),
+        weight: parseInt(document.getElementById('weight').value),
+        banner_id: document.getElementById('banner_id').value,
+        interstitial_id: document.getElementById('interstitial_id').value,
+        rewarded_id: document.getElementById('rewarded_id').value,
+        app_open_id: document.getElementById('app_open_id').value,
+        native_id: document.getElementById('native_id').value
+    };
+    
+    fetch('/api/admin/admob-accounts', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        credentials: 'include',
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            accountModal.hide();
+            loadAccounts();
+        }
+    });
 }
 
 function deleteAccount(id) {
-    if (confirm('Are you sure you want to delete this account?')) {
+    if (confirm('Delete this AdMob account?')) {
         fetch(`/api/admin/admob-accounts/${id}`, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
             credentials: 'include'
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                loadAccounts();
-            }
-        })
-        .catch(error => console.error('Error deleting account:', error));
+        .then(() => loadAccounts());
     }
 }
-
-document.addEventListener('DOMContentLoaded', loadAccounts);
 </script>
 @endsection

@@ -16,7 +16,7 @@ class AdminUserSeeder extends Seeder
             AdminUser::create([
                 'id' => (string) Str::uuid(),
                 'username' => 'admin',
-                'password' => 'admin123',
+                'password' => bcrypt('admin123'),
                 'role' => 'super_admin',
             ]);
             

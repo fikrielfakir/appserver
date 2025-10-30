@@ -57,6 +57,9 @@
                     <a href="/admin/analytics" class="nav-link {{ request()->is('admin/analytics*') ? 'active' : '' }}">
                         <i class="bi bi-graph-up me-2"></i> Analytics
                     </a>
+                    <a href="/admin/settings" class="nav-link {{ request()->is('admin/settings*') ? 'active' : '' }}">
+                        <i class="bi bi-gear me-2"></i> Settings
+                    </a>
                 </nav>
                 <div class="mt-auto pt-4">
                     <button onclick="handleLogout()" class="btn btn-danger w-100">
@@ -78,29 +81,28 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        // Add auth token to all API requests
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+            const token = localStorage.getItem('auth_token');
+            if (token && args[1]) {
+                args[1].headers = {
+                    ...args[1].headers,
+                    'Authorization': `Bearer ${token}`
+                };
+            }
+            return originalFetch.apply(this, args);
+        };
+        
         const user = JSON.parse(sessionStorage.getItem('user') || '{}');
         if (user.username) {
             document.getElementById('username-display').textContent = user.username + ' (' + user.role + ')';
         }
         
         function handleLogout() {
-            fetch('/api/auth/logout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                credentials: 'include'
-            })
-            .then(() => {
-                sessionStorage.removeItem('user');
-                window.location.href = '/login';
-            })
-            .catch(error => {
-                console.error('Logout error:', error);
-                sessionStorage.removeItem('user');
-                window.location.href = '/login';
-            });
+            localStorage.removeItem('auth_token');
+            sessionStorage.removeItem('user');
+            window.location.href = '/login';
         }
     </script>
     

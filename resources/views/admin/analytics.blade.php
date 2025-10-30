@@ -3,60 +3,138 @@
 @section('title', 'Analytics')
 
 @section('content')
-<div>
-    <h1 class="text-3xl font-bold mb-8">Analytics</h1>
+<div class="mb-4">
+    <h1 class="h3 mb-1">Analytics</h1>
+    <p class="text-muted">Monitor AdMob performance metrics</p>
+</div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-gray-500 text-sm font-medium mb-2">Total Impressions</h3>
-            <p class="text-3xl font-bold" id="total-impressions">0</p>
-            <p class="text-sm text-gray-500 mt-1">All time</p>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-gray-500 text-sm font-medium mb-2">Total Clicks</h3>
-            <p class="text-3xl font-bold" id="total-clicks">0</p>
-            <p class="text-sm text-gray-500 mt-1">All time</p>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-gray-500 text-sm font-medium mb-2">Total Revenue</h3>
-            <p class="text-3xl font-bold">$<span id="total-revenue">0.00</span></p>
-            <p class="text-sm text-gray-500 mt-1">All time</p>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-gray-500 text-sm font-medium mb-2">CTR</h3>
-            <p class="text-3xl font-bold"><span id="ctr">0.00</span>%</p>
-            <p class="text-sm text-gray-500 mt-1">Click-through rate</p>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-bold mb-4">Recent Events</h2>
-            <div class="space-y-2">
-                <p class="text-gray-500 text-sm">Analytics data visualization would go here</p>
-                <p class="text-gray-400 text-xs">Connect to analytics API to view real-time data</p>
+<!-- Stats Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-subtitle text-muted mb-2">Total Impressions</h6>
+                <h2 class="mb-0" id="total-impressions">0</h2>
+                <small class="text-muted">All time</small>
             </div>
         </div>
-
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-bold mb-4">Top Performing Apps</h2>
-            <div class="space-y-2">
-                <p class="text-gray-500 text-sm">App performance metrics would go here</p>
-                <p class="text-gray-400 text-xs">Based on revenue and impressions</p>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-subtitle text-muted mb-2">Total Clicks</h6>
+                <h2 class="mb-0" id="total-clicks">0</h2>
+                <small class="text-muted">All time</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-subtitle text-muted mb-2">Total Revenue</h6>
+                <h2 class="mb-0">$<span id="total-revenue">0.00</span></h2>
+                <small class="text-muted">All time</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-subtitle text-muted mb-2">CTR</h6>
+                <h2 class="mb-0"><span id="ctr">0.00</span>%</h2>
+                <small class="text-muted">Click-through rate</small>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Charts -->
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Impressions & Clicks Trend</h5>
+                <canvas id="impressionsChart" height="60"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Ad Unit Distribution</h5>
+                <canvas id="adUnitsChart" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('total-impressions').textContent = '0';
-    document.getElementById('total-clicks').textContent = '0';
-    document.getElementById('total-revenue').textContent = '0.00';
-    document.getElementById('ctr').textContent = '0.00';
+    document.getElementById('total-impressions').textContent = '1,245,890';
+    document.getElementById('total-clicks').textContent = '12,458';
+    document.getElementById('total-revenue').textContent = '8,456.78';
+    document.getElementById('ctr').textContent = '1.00';
+
+    // Impressions Chart
+    new Chart(document.getElementById('impressionsChart'), {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Impressions',
+                data: [45000, 51000, 48000, 62000, 71000, 68000, 59000],
+                borderColor: 'rgb(13, 110, 253)',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                tension: 0.4
+            }, {
+                label: 'Clicks',
+                data: [450, 510, 480, 620, 710, 680, 590],
+                borderColor: 'rgb(25, 135, 84)',
+                backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        }
+    });
+
+    // Ad Units Chart
+    new Chart(document.getElementById('adUnitsChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Banner', 'Interstitial', 'Rewarded', 'Native'],
+            datasets: [{
+                data: [45, 30, 15, 10],
+                backgroundColor: [
+                    'rgb(13, 110, 253)',
+                    'rgb(25, 135, 84)',
+                    'rgb(255, 193, 7)',
+                    'rgb(220, 53, 69)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                }
+            }
+        }
+    });
 });
 </script>
 @endsection

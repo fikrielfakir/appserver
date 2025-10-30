@@ -30,22 +30,13 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
+            'token' => $token,
             'user' => [
                 'id' => $user->id,
                 'username' => $user->username,
                 'role' => $user->role,
             ]
-        ])->cookie(
-            'auth_token',
-            $token,
-            60 * 24,
-            '/',
-            null,
-            true,
-            true,
-            false,
-            'lax'
-        );
+        ]);
     }
 
     public function me()

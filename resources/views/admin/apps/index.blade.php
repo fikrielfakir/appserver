@@ -3,71 +3,150 @@
 @section('title', 'Apps')
 
 @section('content')
-<div>
-    <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold">Apps</h1>
-        <button onclick="showCreateModal()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-            Add New App
-        </button>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Apps</h1>
+        <p class="text-muted">Manage your Android applications</p>
     </div>
+    <button onclick="showCreateModal()" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-2"></i>Add New App
+    </button>
+</div>
 
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">App Name</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Package Name</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Devices</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="apps-table" class="bg-white divide-y divide-gray-200">
-                <tr>
-                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">Loading apps...</td>
-                </tr>
-            </tbody>
-        </table>
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>App Name</th>
+                        <th>Package Name</th>
+                        <th>Status</th>
+                        <th>Devices</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="apps-table">
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">Loading apps...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
+<!-- Create/Edit Modal -->
+<div class="modal fade" id="appModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New App</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="appForm">
+                    <div class="mb-3">
+                        <label class="form-label">App Name</label>
+                        <input type="text" class="form-control" id="app_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Package Name</label>
+                        <input type="text" class="form-control" id="package_name" placeholder="com.example.app" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="status">
+                            <option value="active">Active</option>
+                            <option value="paused">Paused</option>
+                            <option value="disabled">Disabled</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveApp()">Save App</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
 <script>
+let appModal;
+
+document.addEventListener('DOMContentLoaded', function() {
+    appModal = new bootstrap.Modal(document.getElementById('appModal'));
+    loadApps();
+});
+
 function loadApps() {
     fetch('/api/admin/apps', {
         credentials: 'include'
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const tbody = document.getElementById('apps-table');
-                if (data.apps.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No apps found</td></tr>';
-                    return;
-                }
-                
-                tbody.innerHTML = data.apps.map(app => `
-                    <tr>
-                        <td class="px-6 py-4">${app.app_name}</td>
-                        <td class="px-6 py-4">${app.package_name}</td>
-                        <td class="px-6 py-4">
-                            <span class="px-2 py-1 text-xs rounded ${app.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
-                                ${app.status}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4">${app.devices_count || 0}</td>
-                        <td class="px-6 py-4">
-                            <a href="/admin/apps/${app.id}" class="text-blue-600 hover:text-blue-800 mr-3">View</a>
-                            <button onclick="deleteApp('${app.id}')" class="text-red-600 hover:text-red-800">Delete</button>
-                        </td>
-                    </tr>
-                `).join('');
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const tbody = document.getElementById('apps-table');
+            if (data.apps.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No apps found. Create your first app!</td></tr>';
+                return;
             }
-        })
-        .catch(error => console.error('Error loading apps:', error));
+            
+            tbody.innerHTML = data.apps.map(app => `
+                <tr>
+                    <td>${app.app_name}</td>
+                    <td><code>${app.package_name}</code></td>
+                    <td><span class="badge bg-${app.status === 'active' ? 'success' : 'secondary'}">${app.status}</span></td>
+                    <td>${app.devices_count || 0}</td>
+                    <td>
+                        <button onclick="deleteApp('${app.id}')" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    })
+    .catch(error => console.error('Error loading apps:', error));
 }
 
 function showCreateModal() {
-    alert('Create app modal - implement as needed');
+    document.getElementById('appForm').reset();
+    appModal.show();
+}
+
+function saveApp() {
+    const data = {
+        app_name: document.getElementById('app_name').value,
+        package_name: document.getElementById('package_name').value,
+        description: document.getElementById('description').value,
+        status: document.getElementById('status').value
+    };
+    
+    fetch('/api/admin/apps', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        credentials: 'include',
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            appModal.hide();
+            loadApps();
+        }
+    })
+    .catch(error => console.error('Error saving app:', error));
 }
 
 function deleteApp(id) {
@@ -75,7 +154,6 @@ function deleteApp(id) {
         fetch(`/api/admin/apps/${id}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
             credentials: 'include'
@@ -89,7 +167,5 @@ function deleteApp(id) {
         .catch(error => console.error('Error deleting app:', error));
     }
 }
-
-document.addEventListener('DOMContentLoaded', loadApps);
 </script>
 @endsection

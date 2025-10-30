@@ -33,4 +33,8 @@ Route::prefix('admin')->middleware(['web.auth', 'role:admin,superadmin'])->group
     Route::get('/analytics', function () {
         return view('admin.analytics');
     });
+    
+    Route::get('/settings', function () {
+        return view('admin.settings.index');
+    });
 });

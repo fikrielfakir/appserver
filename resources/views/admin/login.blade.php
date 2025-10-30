@@ -89,7 +89,9 @@
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
+            if (data.success && data.token) {
+                // Store token and user info
+                localStorage.setItem('auth_token', data.token);
                 sessionStorage.setItem('user', JSON.stringify(data.user));
                 window.location.href = '/admin/dashboard';
             } else {
