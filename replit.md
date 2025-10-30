@@ -1,11 +1,11 @@
-# Android Platform Control Dashboard - PHP Laravel Rebuild
+# Android Platform Control Dashboard - Laravel Classic
 
 ## Project Overview
 
-A complete rebuild of the Android Platform Control Dashboard using PHP full-stack technology with Laravel framework. This dashboard manages multi-account AdMob switching, push notifications, and analytics across multiple Android applications.
+A complete rebuild of the Android Platform Control Dashboard using **pure PHP Laravel** with a simple, classic architecture. This dashboard manages multi-account AdMob switching, push notifications, and analytics across multiple Android applications.
 
 **Original Stack:** Node.js, Express, React, PostgreSQL  
-**New Stack:** Laravel 12.x, Blade/Livewire, SQLite (temporary)
+**New Stack (Simple & Classic):** Laravel 12.x, Blade Templates, Bootstrap 5, SQLite
 
 ## Current Status
 
@@ -13,8 +13,8 @@ A complete rebuild of the Android Platform Control Dashboard using PHP full-stac
 - **PHP Version:** 8.2
 - **Laravel Version:** 12.36.1
 - **Composer:** Installed with all Laravel dependencies
-- **Node.js:** Installed for Laravel's Vite frontend tooling
-- **Database:** SQLite configured (PostgreSQL planned for production)
+- **Database:** SQLite (file-based, simple, no server required)
+- **Frontend:** Bootstrap 5 via CDN (no build tools, no npm)
 - **Server:** Laravel development server running on port 5000
 - **Workflow:** Configured and running successfully
 
@@ -26,11 +26,9 @@ A complete rebuild of the Android Platform Control Dashboard using PHP full-stac
 │   └── Providers/         # Service providers
 ├── database/              
 │   ├── migrations/        # Database migrations
-│   └── database.sqlite    # SQLite database file
+│   └── database.sqlite    # SQLite database file (224KB)
 ├── resources/
-│   ├── views/             # Blade templates
-│   ├── css/              # Stylesheets
-│   └── js/               # JavaScript files
+│   └── views/             # Blade templates with Bootstrap 5
 ├── routes/
 │   ├── web.php           # Web routes
 │   └── api.php           # API routes
@@ -40,6 +38,28 @@ A complete rebuild of the Android Platform Control Dashboard using PHP full-stac
 
 ### 🔄 Backup
 Original Node.js/React project backed up to `old_nodejs_backup/` directory for reference.
+
+## Technology Stack (Simple & Classic)
+
+### Backend
+- **Framework:** Laravel 12.x
+- **Language:** PHP 8.2
+- **Database:** SQLite (single file, zero config)
+- **ORM:** Eloquent
+- **Authentication:** Laravel Sanctum + JWT
+- **Queue:** Laravel Queue workers
+- **Validation:** Laravel Form Requests
+
+### Frontend
+- **Template Engine:** Blade templates
+- **CSS Framework:** Bootstrap 5.3.2 (via CDN)
+- **Icons:** Bootstrap Icons (via CDN)
+- **JavaScript:** Vanilla JavaScript only
+- **Build Tools:** NONE (no npm, no Vite, no bundlers)
+
+### Deployment
+- **Development Server:** PHP built-in server (port 5000)
+- **Production:** Hostinger or any PHP hosting
 
 ## Features to Rebuild
 
@@ -67,7 +87,7 @@ Original Node.js/React project backed up to `old_nodejs_backup/` directory for r
 ### 3. Admin Dashboard
 - JWT-based authentication with RBAC
 - Real-time metrics and analytics visualization
-- Modern UI with dark mode support
+- Modern UI with Bootstrap 5
 - Comprehensive app management (CRUD operations)
 
 ### 4. RESTful API for Android Integration
@@ -76,22 +96,26 @@ Original Node.js/React project backed up to `old_nodejs_backup/` directory for r
 - Device registration for push notifications
 - Notification delivery and tracking
 
-## Database Schema (8 Tables)
+## Database Schema (11 Tables)
 
-### Core Tables
-1. **admin_users**: Dashboard users with role-based access
-2. **apps**: Android applications being managed
-3. **admob_accounts**: AdMob account configurations
-4. **switching_rules**: Account switching strategies per app
-5. **notifications**: Push notification campaigns
-6. **devices**: Registered user devices for FCM
-7. **analytics_events**: AdMob impression/click/revenue tracking
-8. **notification_events**: Notification delivery tracking
+### Core Tables (Already Migrated)
+1. **users**: Laravel default users table
+2. **cache**: Laravel cache storage
+3. **jobs**: Laravel queue jobs
+4. **admin_users**: Dashboard users with role-based access
+5. **apps**: Android applications being managed
+6. **admob_accounts**: AdMob account configurations
+7. **switching_rules**: Account switching strategies per app
+8. **notifications**: Push notification campaigns
+9. **devices**: Registered user devices for FCM
+10. **analytics_events**: AdMob impression/click/revenue tracking
+11. **notification_events**: Notification delivery tracking
 
 ## API Endpoints to Implement
 
 ### Authentication
 - `POST /api/auth/login` - Admin login with JWT token
+- `POST /api/auth/logout` - Admin logout
 
 ### Admin Dashboard (Protected)
 - `GET /api/admin/dashboard/stats` - Dashboard statistics
@@ -107,28 +131,6 @@ Original Node.js/React project backed up to `old_nodejs_backup/` directory for r
 - `POST /api/v1/device/register` - Register device for notifications
 - `GET /api/v1/notifications/pending` - Get pending notifications
 - `POST /api/v1/notifications/track` - Track notification events
-
-## Technology Stack
-
-### Backend
-- **Framework:** Laravel 12.x
-- **Language:** PHP 8.2
-- **Database:** SQLite (development), PostgreSQL (production)
-- **ORM:** Eloquent
-- **Authentication:** Laravel Sanctum + JWT
-- **Queue:** Laravel Queue workers
-- **Validation:** Laravel Form Requests
-
-### Frontend
-- **Template Engine:** Blade templates
-- **Interactivity:** Laravel Livewire
-- **Styling:** Tailwind CSS (via Vite)
-- **Build Tool:** Vite 7
-- **Icons:** To be determined
-
-### Deployment
-- **Development Server:** PHP built-in server (port 5000)
-- **Production:** To be configured for Hostinger or similar
 
 ## Environment Configuration
 
@@ -160,35 +162,54 @@ These will serve as references for the API endpoints and Android communication p
 3. **View Logs:** Available through workflow logs
 4. **Database:** SQLite file at `database/database.sqlite`
 
+## Why This Simple Classic Stack?
+
+### Advantages
+✅ **No Build Process** - No npm, Vite, or webpack needed  
+✅ **Pure PHP** - Classic server-side rendering  
+✅ **Bootstrap 5 CDN** - No CSS compilation required  
+✅ **SQLite** - Zero database server configuration  
+✅ **Fast Development** - Edit and refresh, no rebuilds  
+✅ **Easy Deployment** - Works on any PHP hosting  
+✅ **Small Footprint** - Minimal dependencies  
+
+### Perfect For
+- Classic web applications
+- Server-side rendered dashboards
+- Simple, maintainable architecture
+- Easy hosting and deployment
+
 ## Next Steps
 
-### Phase 1: Database & Models
-- [ ] Create all 8 database migration files
-- [ ] Create Eloquent models with relationships
-- [ ] Set up seeders for default admin user
+### Phase 1: Authentication & Admin Panel
+- [ ] Create admin user seeder
+- [ ] Implement login functionality
+- [ ] Build dashboard homepage with Bootstrap 5
+- [ ] Add navigation and layout
 
-### Phase 2: Authentication
-- [ ] Install Laravel Sanctum
-- [ ] Set up JWT authentication
-- [ ] Create login API endpoint
-- [ ] Add auth middleware
+### Phase 2: App Management
+- [ ] Create app management UI
+- [ ] Implement CRUD operations
+- [ ] Add validation and error handling
 
-### Phase 3: Admin Dashboard
-- [ ] Create dashboard layout with Blade/Livewire
-- [ ] Implement app management (CRUD)
-- [ ] Implement AdMob account management
-- [ ] Implement switching rules management
-- [ ] Implement notification management
+### Phase 3: AdMob Account Management
+- [ ] Create AdMob account management UI
+- [ ] Implement switching rules configuration
 - [ ] Add analytics visualization
 
-### Phase 4: Public API
+### Phase 4: Notification System
+- [ ] Build notification management UI
+- [ ] Implement scheduling system
+- [ ] Add targeting rules
+
+### Phase 5: Public API
 - [ ] Create Android API routes
 - [ ] Implement configuration endpoint
 - [ ] Implement analytics tracking
 - [ ] Implement device registration
 - [ ] Implement notification endpoints
 
-### Phase 5: Testing & Deployment
+### Phase 6: Testing & Deployment
 - [ ] Test all endpoints
 - [ ] Configure for production deployment
 - [ ] Create deployment documentation
@@ -196,17 +217,22 @@ These will serve as references for the API endpoints and Android communication p
 
 ## Recent Changes
 
-- **2025-10-29**: Laravel 12.x project initialized
-- PHP 8.2 and Composer installed
-- Node.js dependencies installed for Vite
-- Laravel development server configured on port 5000
-- SQLite database configured and migrated
-- Original Node.js project backed up for reference
+- **2025-10-30**: Converted to simple classic stack
+  - Removed all Node.js, npm, Vite dependencies
+  - Replaced Tailwind with Bootstrap 5 CDN
+  - Switched from PostgreSQL to SQLite
+  - Updated all Blade templates to use Bootstrap 5
+  - Removed all build tools and compilation steps
+  - Created clean, simple architecture
 
 ## Notes
 
+- **No npm/Node.js required** - Pure PHP/Laravel stack
+- **No build process** - Direct file editing, instant changes
+- **Bootstrap 5 via CDN** - Modern UI without compilation
+- **SQLite database** - Simple file-based storage
 - Original project had comprehensive Hostinger deployment documentation
 - All original features and API endpoints must be replicated
-- UI should maintain modern, clean design principles
+- UI maintains modern, clean design with Bootstrap 5
 - Security features (JWT, password hashing, input validation) are critical
 - Android integration must be seamless and well-documented
